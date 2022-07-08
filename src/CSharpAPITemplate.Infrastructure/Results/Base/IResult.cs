@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc;
+
 namespace CSharpAPITemplate.Infrastructure.Results.Base;
 
 public interface IResult<T> : IBaseResult
@@ -6,4 +8,6 @@ public interface IResult<T> : IBaseResult
 	/// Модель результата бизнес-операции
 	/// </summary>
 	T? Data { get; set; }
+
+	IActionResult ToActionResult();
 }

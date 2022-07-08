@@ -9,14 +9,15 @@ namespace CSharpAPITemplate.Data;
 /// </summary>
 public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
-	/// <summary>
-	/// Parameterless constructor for mocking in unit tests.
-	/// </summary>
+	// /// <summary>
+	// /// Parameterless constructor for mocking in unit tests.
+	// /// </summary>
 	public ApplicationDbContext()
 	{
 	}
-        
-	public ApplicationDbContext(DbContextOptions opt)
+
+	/// <inheritdoc />
+	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> opt)
 		: base(opt)
 	{
 	}
@@ -24,6 +25,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 	public DbSet<Post> Posts { get; set; }
 	
 	public DbSet<Comment> Comments { get; set; }
+	
+	public DbSet<User> Users { get; set; }
 
 	public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
 	{

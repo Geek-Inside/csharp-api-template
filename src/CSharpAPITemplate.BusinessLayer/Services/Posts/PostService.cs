@@ -8,7 +8,7 @@ namespace CSharpAPITemplate.BusinessLayer.Services.Posts;
 
 public class PostService : BaseService<Post, PostDto>, IPostService
 {
-	public PostService(IApplicationDbContext database, IMapper mapper, ILogger logger) : base(database, mapper, logger)
-	{
-	}
+	public PostService(IApplicationDbContext database, IMapper mapper, ILogger<PostService> logger) 
+		: base(database, mapper, logger)
+	{ }
 }

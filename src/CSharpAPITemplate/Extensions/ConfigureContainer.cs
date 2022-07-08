@@ -1,35 +1,25 @@
-﻿using CSharpAPITemplate.Infrastructure.Middleware;
+﻿using CSharpAPITemplate.Data;
+using CSharpAPITemplate.Infrastructure.Middleware;
+using CSharpAPITemplate.Middleware;
 using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Logging;
-using Serilog;
 
-namespace CSharpAPITemplate.BusinessLayer.Extensions
+namespace CSharpAPITemplate.Extensions
 {
     public static class ConfigureContainer
     {
-        public static void ConfigureUnhandledExceptionMiddleware(this IApplicationBuilder app)
+        public static void ConfigureMiddlewares(this IApplicationBuilder app)
         {
             app.UseMiddleware<UnhandledExceptionMiddleware>();
+            app.UseMiddleware<JwtMiddleware>();
         }
 
         public static void ConfigureSwagger(this IApplicationBuilder app)
         {
             app.UseSwagger();
-
-            app.UseSwaggerUI(setupAction =>
-            {
-                setupAction.SwaggerEndpoint("/swagger/OpenAPISpecification/swagger.json", "Simple API template");
-                setupAction.RoutePrefix = "OpenAPI";
-            });
-        }
-
-        public static void ConfigureLogger(this ILoggerFactory loggerFactory)
-        {
-            loggerFactory.AddSerilog();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Example"));
         }
 
         public static void UseHealthCheck(this IApplicationBuilder app)
@@ -49,6 +39,16 @@ namespace CSharpAPITemplate.BusinessLayer.Extensions
                 setup.ApiPath = "/healthcheck";
                 setup.UIPath = "/healthcheck-ui";
             });
+        }
+        
+        /// <summary>
+        /// Auto migrate if <see cref="ApplicationDbContext"/> is not properly migrated.
+        /// </summary>
+        public static void SyncMigrations<TContext>(this IApplicationBuilder app) where TContext : DbContext
+        {
+            using var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
+            var context = serviceScope.ServiceProvider.GetService<TContext>();
+            context?.Database.Migrate();
         }
     }
 }

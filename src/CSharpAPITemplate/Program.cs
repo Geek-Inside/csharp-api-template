@@ -1,26 +1,48 @@
-var builder = WebApplication.CreateBuilder(args);
+using CSharpAPITemplate.Data;
+using CSharpAPITemplate.Extensions;
 
 // Add services to the container.
+var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddGridSend(builder.Configuration);
 
+builder.Services.AddServices();
 
-var app = builder.Build();
+builder.Services.AddDbContext(builder.Configuration);
+
+builder.Services.AddAutoMapper();
+
+builder.Services.AddSwagger();
+
+builder.Services.AddVersioning();
+
+builder.Services.AddHealthCheck(builder.Configuration);
+
 
 // Configure the HTTP request pipeline.
+var app = builder.Build();
+
+app.SyncMigrations<ApplicationDbContext>();
+
 if (app.Environment.IsDevelopment())
-{
-	app.UseSwagger();
-	app.UseSwaggerUI();
-}
+	app.ConfigureSwagger();
 
-app.UseHttpsRedirection();
+if(app.Environment.IsProduction())
+	app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.ConfigureMiddlewares();
+
+app.UseHealthCheck();
 
 app.MapControllers();
+
+app.UseCors(policyBuilder =>
+{
+	policyBuilder.AllowAnyOrigin();
+	policyBuilder.AllowAnyMethod();
+	policyBuilder.AllowAnyHeader();
+});
 
 app.Run();

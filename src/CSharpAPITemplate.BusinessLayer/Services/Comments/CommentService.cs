@@ -8,7 +8,7 @@ namespace CSharpAPITemplate.BusinessLayer.Services.Comments;
 
 public class CommentService : BaseService<Comment, CommentDto>, ICommentService
 {
-	public CommentService(IApplicationDbContext database, IMapper mapper, ILogger logger) : base(database, mapper, logger)
-	{
-	}
+	public CommentService(IApplicationDbContext database, IMapper mapper, ILogger<CommentService> logger) 
+		: base(database, mapper, logger)
+	{ }
 }

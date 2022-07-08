@@ -2,15 +2,15 @@
 using CSharpAPITemplate.BusinessLayer.Mappings;
 using CSharpAPITemplate.BusinessLayer.Services.Comments;
 using CSharpAPITemplate.BusinessLayer.Services.Posts;
+using CSharpAPITemplate.BusinessLayer.Services.Users;
 using CSharpAPITemplate.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
+using SendGrid.Extensions.DependencyInjection;
 
-namespace CSharpAPITemplate.BusinessLayer.Extensions
+namespace CSharpAPITemplate.Extensions
 {
     public static class ConfigureServiceContainer
     {
@@ -18,8 +18,18 @@ namespace CSharpAPITemplate.BusinessLayer.Extensions
         {
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IUserService, UserService>();
         }
         
+        public static void AddGridSend(this IServiceCollection services, IConfiguration configuration)
+        {
+            var apiKey = configuration.GetSection("Setup:SendGrid:ApiKey").Value;
+            services.AddSendGrid(options =>
+            {
+                options.ApiKey = apiKey;
+            });
+        }
+
         public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<ApplicationDbContext>(builder =>
@@ -27,11 +37,13 @@ namespace CSharpAPITemplate.BusinessLayer.Extensions
                 builder.UseNpgsql(configuration.GetConnectionString("CORE_CONNECTION_STRING"), optionsBuilder =>
                 {
                     optionsBuilder.CommandTimeout(180);
-                    optionsBuilder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
+                    optionsBuilder.MigrationsAssembly("CSharpAPITemplate");
                 });
                 builder.EnableSensitiveDataLogging(false);
                 builder.EnableDetailedErrors();
             });
+            
+            services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>()!);
         }
 
         public static void AddAutoMapper(this IServiceCollection services)
@@ -42,44 +54,10 @@ namespace CSharpAPITemplate.BusinessLayer.Extensions
 
         public static void AddSwagger(this IServiceCollection serviceCollection)
         {
-            serviceCollection.AddSwaggerGen(setupAction =>
+            serviceCollection.AddSwaggerGen(c =>
             {
-
-                setupAction.SwaggerDoc(
-                    "OpenAPI",
-                    new OpenApiInfo
-                    {
-                        Title = "Simple API Template",
-                        Version = "1",
-                        Contact = new OpenApiContact()
-                        {
-                            Email = "maslennikovvaleriy@gmail.com",
-                            Name = "Valeriy Maslennikov",
-                        }
-                    });
-
-                setupAction.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "bearer",
-                    BearerFormat = "JWT",
-                    Description = $"Input your Bearer token.",
-                });
-                setupAction.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer",
-                            },
-                        }, new List<string>()
-                    },
-                });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API Example", Version = "v1" });
             });
-
         }
         
         public static void AddVersioning(this IServiceCollection serviceCollection)
