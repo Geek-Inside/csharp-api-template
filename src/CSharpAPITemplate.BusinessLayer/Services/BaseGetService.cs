@@ -28,7 +28,7 @@ public class BaseGetService<TEntity, TDto> : IBaseGetService<TDto>
 		Logger = logger;
 	}
 	
-	public async Task<Result<TDto>> GetAsync(long id, long userId = default, CancellationToken cancellationToken = default)
+	public virtual async Task<Result<TDto>> GetAsync(long id, long userId = default, CancellationToken cancellationToken = default)
 	{
 		try
 		{
@@ -45,7 +45,7 @@ public class BaseGetService<TEntity, TDto> : IBaseGetService<TDto>
 		}
 	}
 
-	public async Task<Result<List<TDto>>> GetAllAsync(long userId = default, CancellationToken cancellationToken = default)
+	public virtual async Task<Result<List<TDto>>> GetAllAsync(long userId = default, CancellationToken cancellationToken = default)
 	{
 		try
 		{

@@ -22,7 +22,7 @@ public class BaseService<TEntity, TDto> : BaseGetService<TEntity, TDto>, IBaseSe
 	{
 	}
 
-	public async Task<Result<TDto>> CreateAsync(TDto dto, long userId, CancellationToken cancellationToken)
+	public virtual async Task<Result<TDto>> CreateAsync(TDto dto, long userId, CancellationToken cancellationToken)
 	{
 		try
 		{
@@ -40,7 +40,7 @@ public class BaseService<TEntity, TDto> : BaseGetService<TEntity, TDto>, IBaseSe
 		}
 	}
 
-	public async Task<Result<TDto>> UpdateAsync(long id, JsonPatchDocument? patch, CancellationToken cancellationToken)
+	public virtual async Task<Result<TDto>> UpdateAsync(long id, JsonPatchDocument? patch, CancellationToken cancellationToken)
 	{
 		try
 		{
@@ -74,7 +74,7 @@ public class BaseService<TEntity, TDto> : BaseGetService<TEntity, TDto>, IBaseSe
 		}
 	}
 
-	public async Task<Result<TDto>> DeleteAsync(long id, CancellationToken cancellationToken)
+	public virtual async Task<Result<TDto>> DeleteAsync(long id, CancellationToken cancellationToken)
 	{
 		try
 		{

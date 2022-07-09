@@ -24,6 +24,7 @@ namespace CSharpAPITemplate.Extensions
 
         public static void UseHealthCheck(this IApplicationBuilder app)
         {
+            // TODO: Move paths to configuration
             app.UseHealthChecks("/health", new HealthCheckOptions
             {
                 Predicate = _ => true,
