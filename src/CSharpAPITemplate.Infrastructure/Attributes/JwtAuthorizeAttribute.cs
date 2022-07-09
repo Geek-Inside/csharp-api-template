@@ -42,7 +42,7 @@ namespace CSharpAPITemplate.Infrastructure.Attributes
 
             // If there aren't any interceptions, then user is not authorized.
             // But if there are no role restrictions, then it's ok.
-            if (userRoles == null || (!Roles.Intersect(userRoles.Split(",")).Any() && Roles.Any()))
+            if (string.IsNullOrEmpty(userRoles) || (!Roles.Intersect(userRoles.Split(",")).Any() && Roles.Any()))
             {
                 var result = new BaseResult
                 {

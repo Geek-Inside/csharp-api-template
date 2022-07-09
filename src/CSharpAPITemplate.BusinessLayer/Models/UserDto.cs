@@ -1,4 +1,5 @@
 ﻿using CSharpAPITemplate.Domain.Entities;
+using CSharpAPITemplate.Domain.Enums;
 
 namespace CSharpAPITemplate.BusinessLayer.Models;
 
@@ -25,4 +26,7 @@ public class UserDto : BaseEntityDto
 
     /// <inheritdoc cref="User.Phone"/>
     public string? Phone { get; set; }
+    
+    /// <inheritdoc cref="User.Roles"/>
+    public UserRoles Roles { get; set; }
 }

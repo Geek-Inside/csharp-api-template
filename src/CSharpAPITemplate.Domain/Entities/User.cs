@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using CSharpAPITemplate.Domain.Common;
+using CSharpAPITemplate.Domain.Enums;
 
 namespace CSharpAPITemplate.Domain.Entities;
 
@@ -45,9 +46,9 @@ public class User : BaseEntity
     public string? Phone { get; set; }
 
     /// <summary>
-    /// User roles. Seperated by comma.
+    /// User roles.
     /// </summary>
-    public string? Roles { get; set; }
+    public UserRoles Roles { get; set; }
         
     /// <summary>
     /// Encrypted password of user.

@@ -9,6 +9,7 @@ using CSharpAPITemplate.BusinessLayer.Models;
 using CSharpAPITemplate.Data;
 using CSharpAPITemplate.Domain.Auth;
 using CSharpAPITemplate.Domain.Entities;
+using CSharpAPITemplate.Domain.Enums;
 using CSharpAPITemplate.Infrastructure.Encryption;
 using CSharpAPITemplate.Infrastructure.Results;
 using CSharpAPITemplate.Infrastructure.Results.Base;
@@ -75,7 +76,7 @@ public class UserService : BaseService<User, UserDto>, IUserService
         {
             TemporaryEmail = credentials.Email.ToLowerInvariant(),
             HashedPassword = hashedPassword,
-            Roles = "User"
+            Roles = UserRoles.User
         };
             
         await Database.Users.AddAsync(newUser, cancellationToken);
@@ -334,7 +335,7 @@ public class UserService : BaseService<User, UserDto>, IUserService
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim("id", user.Id.ToString()),
-                new Claim("roles", user.Roles ?? "")
+                new Claim("roles", user.Roles.ToString())
             }),
             Expires = DateTime.UtcNow.AddMinutes(expireMinutes),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
