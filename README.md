@@ -1,5 +1,10 @@
 # csharp-api-template
-Simple API example writen in C#.
+Simple API example writen in C#. Example is not ready yet.
+
+# Roadmap
+- Unit tests
+- Integration tests
+- Switch custom authentication to default ASP.NET Authentication
 
 # Apply migrations
 ```
